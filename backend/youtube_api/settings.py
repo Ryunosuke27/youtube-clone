@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     #追記
     'corsheaders.middleware.CorsMiddleware',
-    
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -64,7 +64,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000"
 ]
 
-ROOT_URLCONF = 'youtube.urls'
+ROOT_URLCONF = 'youtube_api.urls'
 
 TEMPLATES = [
     {
@@ -82,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'youtube.wsgi.application'
+WSGI_APPLICATION = 'youtube_api.wsgi.application'
 
 #追記
 REST_FRAMEWORK = {
@@ -150,3 +150,5 @@ STATIC_URL = '/static/'
 # 追記
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'api.User'

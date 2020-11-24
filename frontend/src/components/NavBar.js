@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import { FaYoutube } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 
+import {withCookies} from 'react-cookie';
+
 const useStyles = makeStyles((theme) => ({
     title: {
       flexGrow: 1,
@@ -14,8 +16,13 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-const NavBar = () => {
+const NavBar = (props) => {
     const classes = useStyles();
+
+    const Logout = () => {
+        props.cookies.remove('jwt-token');
+        window.location.href = '/';
+    }
 
     return (
         <AppBar position="static">
@@ -26,7 +33,7 @@ const NavBar = () => {
                 <Typography variant="h5" className={classes.title}>
                 youtube app
                 </Typography>
-                <button className = "logout">
+                <button className = "logout" onClick={()=>Logout()}>
                     <FiLogOut/>
                 </button>
             </Toolbar>
@@ -34,4 +41,4 @@ const NavBar = () => {
     )
 }
 
-export default NavBar
+export default withCookies(NavBar)

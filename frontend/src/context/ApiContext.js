@@ -73,6 +73,52 @@ const ApiContextProvider = (props) => {
     }
   };
 
+  const incrementLike = async () => {
+    try {
+      const uploadData = new FormData();
+      uploadData.append("like", selectedVideo.like + 1);
+
+      const res = await axios.patch(
+        `http://127.0.0.1:8000/api/video/${selectedVideo.id}/`,
+        uploadData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `JWT ${token}`,
+          },
+        }
+      );
+      setSelectedVideo({ ...selectedVideo, like: res.data.like });
+      setVideo(
+        videos.map((item) => (item.id === selectedVideo.id ? res.data : item))
+      );
+    } catch {
+      console.log("error");
+    }
+  };
+  const incrementDislike = async () => {
+    try {
+      const uploadData = new FormData();
+      uploadData.append("dislike", selectedVideo.dislike + 1);
+
+      const res = await axios.patch(
+        `http://127.0.0.1:8000/api/video/${selectedVideo.id}/`,
+        uploadData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `JWT ${token}`,
+          },
+        }
+      );
+      setSelectedVideo({ ...selectedVideo, dislike: res.data.dislike });
+      setVideo(
+        videos.map((item) => (item.id === selectedVideo.id ? res.data : item))
+      );
+    } catch {
+      console.log("error");
+    }
+  };
   return <div></div>;
 };
 

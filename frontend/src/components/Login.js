@@ -91,7 +91,7 @@ const loginReducer = (state, action) => {
     case TOGGLE_MODE: {
       return {
         ...state,
-        isLoadingView: !state.isLoadingView,
+        isLoginView: !state.isLoginView,
       };
     }
     default:
@@ -99,9 +99,71 @@ const loginReducer = (state, action) => {
   }
 };
 
-const Login = () => {
+const Login = (props) => {
   const classes = useStyles();
   const [state, dispatch] = useReducer(loginReducer, initialState);
+
+  const inputChangedLog = () => (event) => {
+    const cred = state.credentialsLog;
+    cred[event.target.name] = event.target.value;
+    dispatch({
+      type: INPUT_EDIT,
+      inputName: "state.credentialLog",
+      payload: cred,
+    });
+  };
+
+  const login = async (event) => {
+    event.preventDefault();
+    if (state.isLoginView) {
+      try {
+        dispatch({ type: START_FETCH });
+        const res = await axios.post(
+          `http://127.0.0.1:8000/authen/jwt/create/`,
+          state.credentialsLog,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        props.cookies.set("jwt-token", res.data.access);
+        res.data.access
+          ? (window.location.href = "/youtube")
+          : (window.location.href = "/");
+        dispatch({ type: FETCH_SUCCESS });
+      } catch {
+        dispatch({ type: ERROR_CATCHED });
+      }
+    } else {
+      try {
+        dispatch({ type: START_FETCH });
+        await axios.post(
+          `http://127.0.0.1:8000/api/create/`,
+          state.credentialsLog,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        const res = await axios.post(
+          `http://127.0.0.1:8000/authen/jwt/create/`,
+          state.credentialsLog,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        props.cookies.set("jwt-token", res.data.access);
+        res.data.access
+          ? (window.location.href = "/youtube")
+          : (window.location.href = "/");
+        dispatch({ type: FETCH_SUCCESS });
+      } catch {
+        dispatch({ type: ERROR_CATCHED });
+      }
+    }
+  };
+
+  const toggleView = () => {
+    dispatch({ type: TOGGLE_MODE });
+  };
 
   return (
     <Container maxWidth="xs">
@@ -114,55 +176,30 @@ const Login = () => {
           <Typography variant="h5">
             {state.isLoginView ? "Login" : "Register"}
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              label="Email"
-              name="email"
-              autoFocus
-              value={state.credentialsLog.email}
-              onChange={inputChangedLog()}
-            />
-            　
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              value={state.credentialsLog.email}
-              onChange={inputChangedLog()}
-            />
-            <span className={classes.spanError}>{state.error}</span>
-            {state.isLoginView ? (
-              !state.credentialsLog.password || !state.credentialsLog.email ? (
-                <Button
-                  className={classes.submit}
-                  type="submit"
-                  fullWidth
-                  disabled
-                  variant="contained"
-                  color="primary"
-                >
-                  Login
-                </Button>
-              ) : (
-                <Button
-                  className={classes.submit}
-                  type="submit"
-                  fullWidth
-                  disabled
-                  variant="contained"
-                  color="primary"
-                >
-                  Login
-                </Button>
-              )
-            ) : !state.credentialsLog.password ||
-              !state.credentialsLog.email ? (
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Email"
+            name="email"
+            autoFocus
+            value={state.credentialsLog.email}
+            onChange={inputChangedLog()}
+          />
+          　
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            value={state.credentialsLog.password}
+            onChange={inputChangedLog()}
+          />
+          <span className={classes.spanError}>{state.error}</span>
+          {state.isLoginView ? (
+            !state.credentialsLog.password || !state.credentialsLog.email ? (
               <Button
                 className={classes.submit}
                 type="submit"
@@ -171,24 +208,44 @@ const Login = () => {
                 variant="contained"
                 color="primary"
               >
-                Register
+                Login
               </Button>
             ) : (
               <Button
                 className={classes.submit}
                 type="submit"
                 fullWidth
-                disabled
                 variant="contained"
                 color="primary"
               >
-                Register
+                Login
               </Button>
-            )}
-            <span onClick={() => toggleView()} className={classes.span}>
-              {state.isLoginView ? "Create Account" : "Back to login"}
-            </span>
-          </form>
+            )
+          ) : !state.credentialsLog.password || !state.credentialsLog.email ? (
+            <Button
+              className={classes.submit}
+              type="submit"
+              fullWidth
+              disabled
+              variant="contained"
+              color="primary"
+            >
+              Register
+            </Button>
+          ) : (
+            <Button
+              className={classes.submit}
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Register
+            </Button>
+          )}
+          <span onClick={() => toggleView()} className={classes.span}>
+            {state.isLoginView ? "Create Account" : "Back to login"}
+          </span>
         </div>
       </form>
     </Container>

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { withCookies } from "react-cookies";
+import { withCookies } from "react-cookie";
 import axios from "axios";
 
 export const ApiContext = createContext();
@@ -96,7 +96,7 @@ const ApiContextProvider = (props) => {
       console.log("error");
     }
   };
-  const incrementDislike = async () => {
+  const incrementDisLike = async () => {
     try {
       const uploadData = new FormData();
       uploadData.append("dislike", selectedVideo.dislike + 1);
@@ -119,7 +119,29 @@ const ApiContextProvider = (props) => {
       console.log("error");
     }
   };
-  return <div></div>;
+  return (
+    <ApiContext.Provider
+      value={{
+        videos,
+        title,
+        setTitle,
+        video,
+        setVideo,
+        thum,
+        setThum,
+        selectedVideo,
+        setSelectedVideo,
+        modelIsOpen,
+        setModelIsOpen,
+        newVideo,
+        deleteVideo,
+        incrementLike,
+        incrementDisLike,
+      }}
+    >
+      {props.children}
+    </ApiContext.Provider>
+  );
 };
 
 export default withCookies(ApiContextProvider);

@@ -1,28 +1,34 @@
-import './App.css';
+import "./App.css";
 
-import indigo from '@material-ui/core/colors/indigo'
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import {ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles';
-import NavBar from './components/NavBar';
+import indigo from "@material-ui/core/colors/indigo";
+import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import NavBar from "./components/NavBar";
+
+import ApiContextProvider from "./context/ApiContext";
+import Main from "./components/Main";
 
 // 基本となる色を指定
 const theme = createMuiTheme({
-  palette:{
+  palette: {
     primary: indigo,
     secondary: {
-      main:'#f44336'
+      main: "#f44336",
     },
   },
   typography: {
-    fontFamily:'"Comic Neue",cursive',
+    fontFamily: '"Comic Neue",cursive',
   },
 });
 
 function App() {
   return (
-    <MuiThemeProvider theme = {theme}>
-      <NavBar/>
-    </MuiThemeProvider>
+    <ApiContextProvider>
+      <MuiThemeProvider theme={theme}>
+        <NavBar />
+        <Main />
+      </MuiThemeProvider>
+    </ApiContextProvider>
   );
 }
 
